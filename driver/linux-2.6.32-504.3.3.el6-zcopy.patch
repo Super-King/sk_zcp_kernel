@@ -1,0 +1,98 @@
+kernel 2.6.32-504.3.3 test passed.
+--- linux-2.6.32-504.3.3_01.el6.x86_64/net/core/skbuff.c	2014-12-13 04:29:42.000000000 +0800
++++ /mnt/linux-2.6.32-504.3.3.el6.x86_64.new/net/core/skbuff.c	2015-02-16 13:59:31.919000235 +0800
+@@ -72,6 +72,26 @@
+ 
+ #include "kmap_skb.h"
+ 
++typedef struct sk_buff * (*alloc_zcopy_zkb)(struct net_device *, int *);
++typedef void (*free_zcopy_zkb)(struct sk_buff *, int *);
++
++static alloc_zcopy_zkb alloc_zkb = NULL;
++static free_zcopy_zkb free_zkb = NULL;
++
++void register_zero_copy_alloc_release_fun(alloc_zcopy_zkb alloc, free_zcopy_zkb free)
++{
++	alloc_zkb = alloc;
++	free_zkb = free;
++}
++EXPORT_SYMBOL(register_zero_copy_alloc_release_fun);
++
++void unregister_zero_copy_alloc_release_fun(void)
++{
++	alloc_zkb = NULL;
++	free_zkb = NULL;
++}
++EXPORT_SYMBOL(unregister_zero_copy_alloc_release_fun);
++
+ static struct kmem_cache *skbuff_head_cache __read_mostly;
+ static struct kmem_cache *skbuff_fclone_cache __read_mostly;
+ 
+@@ -315,6 +335,14 @@ struct sk_buff *__netdev_alloc_skb(struc
+ {
+ 	struct sk_buff *skb;
+ 
++	if(alloc_zkb)
++	{
++		int err;
++		skb = alloc_zkb(dev, &err);
++		if(err >= 0)
++			return skb;
++	}
++
+ 	skb = __alloc_skb(length + NET_SKB_PAD, gfp_mask, 0, NUMA_NO_NODE);
+ 	if (likely(skb)) {
+ 		skb_reserve(skb, NET_SKB_PAD);
+@@ -496,6 +524,13 @@ static void skb_release_all(struct sk_bu
+ 
+ void __kfree_skb(struct sk_buff *skb)
+ {
++	if(free_zkb)
++	{
++		int err;
++		free_zkb(skb, &err);
++		if(err >= 0)
++			return;
++	}
+ 	skb_release_all(skb);
+ 	kfree_skbmem(skb);
+ }
+--- linux-2.6.32-504.3.3_01.el6.x86_64/net/core/dev.c	2014-12-13 04:29:42.000000000 +0800
++++ /mnt/linux-2.6.32-504.3.3.el6.x86_64.new/net/core/dev.c	2015-02-16 14:00:42.640000056 +0800
+@@ -210,6 +210,21 @@ static DEFINE_SPINLOCK(napi_hash_lock);
+ static unsigned int napi_gen_id;
+ static DEFINE_HASHTABLE(napi_hash, 8);
+ 
++typedef void (*deliver_zcopy_zkb)(struct sk_buff *, int *);
++static deliver_zcopy_zkb deliver_zkb = NULL;
++
++void register_zero_copy_deliver_fun(deliver_zcopy_zkb deliver)
++{
++	deliver_zkb = deliver;
++}
++EXPORT_SYMBOL(register_zero_copy_deliver_fun);
++
++void unregister_zero_copy_deliver_fun(void)
++{
++	deliver_zkb = NULL;
++}
++EXPORT_SYMBOL(unregister_zero_copy_deliver_fun);
++
+ static inline struct hlist_head *dev_name_hash(struct net *net, const char *name)
+ {
+ 	unsigned hash = full_name_hash(name, strnlen(name, IFNAMSIZ));
+@@ -3464,6 +3479,14 @@ int netif_receive_skb(struct sk_buff *sk
+ 	struct rps_dev_flow voidflow, *rflow = &voidflow;
+ 	int cpu, ret;
+ 
++	if(deliver_zkb)
++	{
++		int err;
++		deliver_zkb(skb, &err);
++		if(err >= 0)
++			return NET_RX_SUCCESS;
++	}
++
+ 	cpu = get_rps_cpu(skb->dev, skb, &rflow);
+ 
+ 	if (cpu >= 0)

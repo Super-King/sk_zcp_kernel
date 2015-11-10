@@ -1,0 +1,30 @@
+Debug: sk_zcopy size is 272, actually 272.
+e1000: Intel(R) PRO/1000 Network Driver - version 7.3.21-k8-NAPI
+e1000: Copyright (c) 1999-2006 Intel Corporation.
+e1000 0000:02:01.0: setting latency timer to 64
+e1000 0000:02:01.0 eth0: (PCI:66MHz:32-bit) 00:0c:29:03:46:e0
+e1000 0000:02:01.0 eth0: Intel(R) PRO/1000 Network Connection
+e1000: eth0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: None
+8021q: adding VLAN 0 to HW filter on device eth0
+device eth0 entered promiscuous mode
+Debug: ============= read ================
+Debug: alloc_rw_remap_mem remap_order 10, remap_count 128, remap_bucket_size 4194304, total_mem 536870912
+Debug: phy: bucket_count 1, skb_count_per_bucket 524288
+Debug: read: total skb count 262143, 262144, total_count 262144.
+Debug: read: count 1: index 3 netcard will be enabled zero copy.
+Debug: read: skb_count 262144, start_index 0, hash_count 10, skb_count_per_bucket 16384, bucket_count_per_queue 1, skb_bucket_size 131072, skb_bucket_order 5, free slot count 98204.
+Debug: ============= write ===============
+Debug: alloc_rw_remap_mem remap_order 10, remap_count 128, remap_bucket_size 4194304, total_mem 536870912
+Debug: phy: bucket_count 1, skb_count_per_bucket 524288
+Debug: write: total skb count 0, 262144, total_count 524288.
+Debug: write: count 1: index 3 netcard will be enabled zero copy.
+Debug: write: skb_count 262144, start_index 262144, hash_count 10, skb_count_per_bucket 16384, bucket_count_per_queue 1, skb_bucket_size 131072, skb_bucket_order 5, free slot count 98204.
+Debug: eth0: real num tx queues 1 !
+Debug: nics 1.
+Debug: nid 3: start queue 0, end queue 9.
+Debug: remap_pfn_rang page ok, size 536870912. start virt address[7f4ff9af1000]
+Debug: remap_pfn_rang page ok, size 536870912. start virt address[7f4fd97af000]
+Debug: start test skb initialize!
+Debug: kernel thread 2176 start run !
+Debug: start queue 0, end queue 9.
+Debug: reclaim thread 2177 start run !
