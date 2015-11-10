@@ -14,5 +14,6 @@ for e1000 driver you needn't change anyting but please reload e1000 drver before
 
 # Usage for reload e1000
 rmmod e1000
+
 modprobe e1000 copybreak=0 //disable copybreak
 
