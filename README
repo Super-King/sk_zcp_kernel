@@ -1,5 +1,4 @@
 # Project goal
-
 SK Zero copy project
 This project is a very fast packet receive from kernel space or send from userspace.
 Both are implemented as a single kernel module for Linux.
@@ -16,13 +15,9 @@ Here is another project for you want to compile as a module.
 https://github.com/Super-King/sk_zcp_module
 
 # Dir introduce
-
 driver: including zero copy driver and kernel patch.
-
 example: including send forward and recive sample program.
-
 include: using for application head file.
-
 lib:     using for application lib file.
 
 # Test ENV
