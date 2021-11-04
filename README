@@ -1,6 +1,6 @@
 # Project goal
 SK Zero copy project
-This project are network packets receive from kernel space or send to userspace by zero copy.
+This project is network packets receive from kernel space or send to userspace by zero copy.
 Both are implemented as a single kernel module for Linux.
 
 This project have the same goal with netmap.
